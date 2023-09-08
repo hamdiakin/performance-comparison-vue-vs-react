@@ -10,6 +10,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      vue: '@vue/compat',
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }

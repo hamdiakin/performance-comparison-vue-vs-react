@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Pagination from 'rc-pagination';
-import 'rc-pagination/assets/index.css';
+import Pagination from "rc-pagination";
+import "rc-pagination/assets/index.css";
 import Axios from "axios";
 
 const List = () => {
@@ -23,7 +23,7 @@ const List = () => {
       const response = await Axios.get("http://localhost:3004/platforms"); // Assuming the data.json file is in the public folder
       setData(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -76,7 +76,10 @@ const List = () => {
           <h2 className="text-xl font-semibold">{item.name}</h2>
           <p className="text-gray-600">Color: {item.color}</p>
           {/* Add more item attributes here */}
-          <Link to={`/item/${item.id}`} className="text-blue-500 hover:underline">
+          <Link
+            to={`/item/${item.id}`}
+            className="text-blue-500 hover:underline"
+          >
             View Details
           </Link>
         </div>

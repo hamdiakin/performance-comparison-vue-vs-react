@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import DataTable from "react-data-table-component";
-import "bootstrap/dist/css/bootstrap.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const DataGrid = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [sortCriteria, setSortCriteria] = useState("name");
+  const [sortCriteria, setSortCriteria] = useState("platformName");
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
@@ -51,9 +50,9 @@ const DataGrid = () => {
 
   const sortData = (data, criteria) => {
     return [...data].sort((a, b) => {
-      if (criteria === "name") {
-        return a.name.localeCompare(b.name);
-      } else if (criteria === "date_created" || criteria === "date_updated") {
+      if (criteria === "platformName") {
+        return a.platformName.localeCompare(b.platformName);
+      } else if (criteria === "inventoryDate") {
         return new Date(a[criteria]) - new Date(b[criteria]);
       } else if (criteria === "id" || criteria === "length") {
         return a[criteria] - b[criteria];
@@ -81,28 +80,8 @@ const DataGrid = () => {
 
   const columns = [
     {
-      name: "Name",
-      selector: (row) => row.name,
-      sortable: true,
-    },
-    {
-      name: "Color",
-      selector: (row) => row.color,
-      sortable: true,
-    },
-    {
-      name: "Length",
-      selector: (row) => row.length,
-      sortable: true,
-    },
-    {
-      name: "Date Created",
-      selector: (row) => row.date_created,
-      sortable: true,
-    },
-    {
-      name: "Date Updated",
-      selector: (row) => row.date_updated,
+      name: "Platform Name",
+      selector: (row) => row.platformName,
       sortable: true,
     },
     {
@@ -111,67 +90,81 @@ const DataGrid = () => {
       sortable: true,
     },
     {
+      name: "Inventory Date",
+      selector: (row) => row.inventoryDate,
+      sortable: true,
+    },
+    {
+      name: "Length",
+      selector: (row) => row.length,
+      sortable: true,
+    },
+    {
+      name: "Width",
+      selector: (row) => row.width,
+      sortable: true,
+    },
+    {
+      name: "Height",
+      selector: (row) => row.height,
+      sortable: true,
+    },
+    {
+      name: "Max Speed",
+      selector: (row) => row.maxSpeed,
+      sortable: true,
+    },
+    {
+      name: "Min Speed",
+      selector: (row) => row.minSpeed,
+      sortable: true,
+    },
+    {
       name: "Actions",
-      button: true,
       cell: (row) => (
-        <div>
-          <div className="">
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                navigate(`/item/${row.id}`);
-              }}
-            >
-              View
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => {
-                navigate(`/item/${row.id}/edit`);
-              }}
-            >
-              Edit
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={() => {
-                // Handle delete logic here
-              }}
-            >
-              Delete
-            </button>
-          </div>
+        <div className="space-x-2">
+          <Link
+            to={`/item/${row.id}`}
+          >
+            View
+          </Link>
+          <Link
+            to={`/item/${row.id}/edit`}
+          >
+            Edit
+          </Link>
+          <button
+            onClick={() => {
+            }}
+          >
+            Delete
+          </button>
         </div>
       ),
     },
+    
   ];
 
   return (
-    <div>
-      <div>
-        <div className="mb-4 d-flex align-items-center">
-          <label className="mr-2">Filter by:</label>
-          <div className="d-flex align-items-center">
-            <input
-              type="text"
-              value={filter}
-              onChange={handleFilterChange}
-              className="border border-gray-300 p-1 rounded-md mr-2"
-            />
-          </div>
-          <label className="mr-2">Rows per page:</label>
-          <div className="d-flex align-items-center">
-            <select
-              value={pageSize}
-              onChange={(e) => handlePerPageChange(Number(e.target.value))}
-              className="border border-gray-300 p-1 rounded-md"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-            </select>
-          </div>
-        </div>
+    <div className="p-4">
+      <div className="mb-4 flex items-center">
+        <label className="mr-2">Filter by:</label>
+        <input
+          type="text"
+          value={filter}
+          onChange={handleFilterChange}
+          className="border border-gray-300 p-1 rounded-md mr-2"
+        />
+        <label className="mr-2">Rows per page:</label>
+        <select
+          value={pageSize}
+          onChange={(e) => handlePerPageChange(Number(e.target.value))}
+          className="border border-gray-300 p-1 rounded-md"
+        >
+          <option value={5}>5</option>
+          <option value={10}>10</option>
+          <option value={15}>15</option>
+        </select>
       </div>
 
       <DataTable

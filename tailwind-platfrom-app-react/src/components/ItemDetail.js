@@ -1,71 +1,83 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
 const ItemDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [item, setItem] = useState([]); // Initialize item as an empty array
+  const [item, setItem] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   const fetchItemData = async () => {
     try {
-      console.log("Fetching item data for ID:", id);
-      const response = await Axios.get(`http://localhost:3004/platforms?id=${id}`);
-      console.log("API Response:", response.data);
+      const response = await Axios.get(
+        `http://localhost:3004/platforms?id=${id}`
+      );
       const itemData = response.data;
 
       if (Array.isArray(itemData) && itemData.length > 0) {
-        // Check if itemData is an array and not empty
         setItem(itemData);
       } else {
         console.warn("No data found for ID:", id);
-        setItem([]); // Set item as an empty array if no data is found
+        setItem([]);
       }
+      setIsLoading(false); // Set loading state to false
     } catch (error) {
       console.error("Error fetching item data:", error);
-      setItem([]); // Set item as an empty array in case of an error
+      setItem([]);
+      setIsLoading(false); // Set loading state to false
     }
   };
 
   useEffect(() => {
-    // Call the asynchronous function to fetch item data
     fetchItemData();
   }, [id]);
 
   const handleDelete = async () => {
     try {
-      // Send an API request to delete the item
       await Axios.delete(`http://localhost:3004/platforms/${id}`);
-      // Redirect to the list page after successful deletion
-      navigate.push("/");
+      navigate("/");
     } catch (error) {
       console.error("Error deleting item:", error);
     }
   };
 
-  if (item.length === 0) {
-    // Handle loading state or item not found
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <div className="text-center text-gray-600">Loading...</div>;
   }
 
   return (
-    <div className="bg-white shadow-md p-4">
-      <h2 className="text-xl font-semibold">{item[0].name}</h2>
-      <p className="text-gray-600">Color: {item[0].color}</p>
-      {/* Display other item attributes here */}
-      <div className="mt-4">
+    <div className="bg-white shadow-md p-4 rounded-lg w-96 mx-auto">
+      <h2 className="text-2xl font-semibold mb-4">
+        Platform Name: {item[0].platformName}
+      </h2>
+      <p className="text-gray-600">Platform ID: {item[0].id}</p>
+      <p className="text-gray-600">Inventory Date: {item[0].inventoryDate}</p>
+      <p className="text-gray-600">Length: {item[0].length}</p>
+      <p className="text-gray-600">Width: {item[0].width}</p>
+      <p className="text-gray-600">Height: {item[0].height}</p>
+      <p className="text-gray-600">Max Speed: {item[0].maxSpeed}</p>
+      <p className="text-gray-600">Min Speed: {item[0].minSpeed}</p>
+
+      <div className="mt-6 flex justify-between">
         <Link to="/" className="text-blue-500 hover:underline">
           Back to List
         </Link>
-      </div>
-      <div className="mt-4">
-        <button onClick={() => navigate(`/item/${id}/edit`)} className="text-blue-500 hover:underline mr-2">
-          Edit
-        </button>
-        <button onClick={handleDelete} className="text-red-500 hover:underline">
-          Delete
-        </button>
+        <div>
+          <button
+            onClick={() => navigate(`/item/${id}/edit`)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 mr-2 transition duration-300"
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-300"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

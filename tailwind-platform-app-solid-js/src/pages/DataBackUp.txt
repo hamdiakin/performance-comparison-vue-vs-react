@@ -1,0 +1,180 @@
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import DataTable from "react-data-table-component";
+import "bootstrap/dist/css/bootstrap.css";
+import { useNavigate } from "react-router-dom";
+
+const DataGrid = () => {
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // Set your desired page size here
+  const [sortCriteria, setSortCriteria] = useState("name"); // Initialize with a default sorting criteria
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Save the current sorting criteria to localStorage
+    localStorage.setItem("sortCriteria", sortCriteria);
+  }, [sortCriteria]);
+
+  const navigate = useNavigate();
+
+  const fetchData = async () => {
+    try {
+      const response = await Axios.get("http://localhost:3004/platforms"); // Replace with your data source URL
+      const sortedData = sortData(response.data, sortCriteria); // Sort the data before storing it
+      setData(sortedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  const handleSort = (criteria) => {
+    // Sort the data with the new criteria and update the sorting criteria state
+    const sortedData = sortData(data, criteria);
+    setData(sortedData);
+    setSortCriteria(criteria);
+  };
+
+  const handlePageChange = (page) => {
+    // Update the current page state
+    setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (newPageSize) => {
+    // Update the page size state and reset to the first page
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to the first page when page size changes
+  };
+
+  const sortData = (data, criteria) => {
+    return [...data].sort((a, b) => {
+      if (criteria === "name") {
+        return a.name.localeCompare(b.name);
+      } else if (criteria === "date_created") {
+        return new Date(a.date_created) - new Date(b.date_created);
+      } else if (criteria === "id") {
+        return a.id - b.id; // Sort by ID as integers
+      }
+      // Add more sorting criteria as needed
+    });
+  };
+
+  const columns = [
+    {
+      name: "Name",
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: "Color",
+      selector: (row) => row.color,
+      sortable: true,
+    },
+    {
+      name: "Length",
+      selector: (row) => row.length,
+      sortable: true,
+    },
+    {
+      name: "Date Created",
+      selector: (row) => row.date_created,
+      sortable: true,
+    },
+    {
+      name: "Date Updated",
+      selector: (row) => row.date_updated,
+      sortable: true,
+    },
+    {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+    },
+    {
+      name: "Actions",
+      button: true,
+      // Adjust cell style to use flex display
+      cell: (row) => (
+        <div style={{ display: "flex", gap: "20px"}}>
+          {/* View button */}
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              navigate(`/item/${row.id}`);
+            }}
+          >
+            View
+          </button>
+
+          {/* Edit button */}
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              navigate(`/item/${row.id}/edit`);
+            }}
+          >
+            Edit
+          </button>
+
+          {/* Delete button */}
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              // Handle delete logic here
+              // You may want to show a confirmation dialog before deleting
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      ),
+    },
+    {
+
+    }
+    // Add more columns as needed
+  ];
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">List of Items</h1>
+      <div className="mb-4">
+        <label className="mr-2">Sort by:</label>
+        <select
+          value={sortCriteria}
+          onChange={(e) => handleSort(e.target.value)}
+          className="border border-gray-300 p-1 rounded-md"
+        >
+          <option value="name">Name</option>
+          <option value="date_created">Date Created</option>
+          <option value="id">ID</option> {/* Add "Sort by ID" */}
+          {/* Add more sorting criteria as needed */}
+        </select>
+      </div>
+      <DataTable
+        columns={columns}
+        data={data.slice(startIndex, endIndex)}
+        pagination
+        paginationServer
+        paginationPerPage={pageSize}
+        paginationTotalRows={data.length}
+        onChangePage={handlePageChange}
+        paginationRowsPerPageOptions={[10, 20, 30]}
+        onChangeRowsPerPage={handlePerPageChange}
+        paginationComponentOptions={{
+          noRowsPerPage: false,
+          pageButtons: 5,
+          paginationActivePage: currentPage, // Pass the currentPage state
+        }}
+      />
+    </div>
+  );
+};
+
+export default DataGrid;

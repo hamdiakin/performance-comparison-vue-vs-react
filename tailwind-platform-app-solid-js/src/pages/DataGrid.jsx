@@ -1,27 +1,47 @@
-
-import "bootstrap/dist/css/bootstrap.css";
-import { createSignal, createEffect, onCleanup } from "solid-js";
-import { Link } from "@solidjs/router";
+import { createSignal, onCleanup , createEffect } from 'solid-js';
+import { LightPaginationNav,PaginationNav,DarkPaginationNav, paginate } from 'solid-paginate'
+import { Link} from "@solidjs/router";
+import 'solid-paginate/styles'
 
 const DataGrid = () => {
-    const [data, setData] = createSignal([]);
-    const [currentPage, setCurrentPage] = createSignal(1);
-    const [pageSize, setPageSize] = createSignal(5);
-    const [sortCriteria, setSortCriteria] = createSignal("name");
-    const [filter, setFilter] = createSignal("");
+  const [data, setData] = createSignal([]);
+  const [currentPage, setCurrentPage] = createSignal(1);
+  const [pageSize, setPageSize] = createSignal(5);
+  const [sortCriteria, setSortCriteria] = createSignal('name');
+  const [filter, setFilter] = createSignal('');
+
 
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:4000/platforms");
-      const data = await response.json();
-      setData(sortData(data, sortCriteria()));
+      const response = await fetch('http://localhost:4000/platforms');
+      const sortedData = sortData(await response.json(), sortCriteria());
+      setData(sortedData);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
+  
+  createEffect(() => {
+    
+
+    fetchData();
+
+    return onCleanup(() => {
+      // Clean up any resources here if needed
+    });
+  });
+
+  createEffect(() => {
+    localStorage.setItem('sortCriteria', sortCriteria());
+  });
+
+  const startIndex = () => (currentPage() - 1) * pageSize();
+  const endIndex = () => startIndex() + pageSize();
 
   const handleSort = (criteria) => {
+    const sortedData = sortData(data(), criteria);
+    setData(sortedData);
     setSortCriteria(criteria);
   };
 
@@ -29,26 +49,18 @@ const DataGrid = () => {
     setCurrentPage(page);
   };
 
-
   const handlePerPageChange = (newPageSize) => {
     setPageSize(newPageSize);
     setCurrentPage(1);
   };
- 
-
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-
-
-
 
   const sortData = (data, criteria) => {
     return [...data].sort((a, b) => {
-      if (criteria === "name") {
+      if (criteria === 'name') {
         return a.name.localeCompare(b.name);
-      } else if (criteria === "date_created" || criteria === "date_updated") {
+      } else if (criteria === 'date_created' || criteria === 'date_updated') {
         return new Date(a[criteria]) - new Date(b[criteria]);
-      } else if (criteria === "id" || criteria === "length") {
+      } else if (criteria === 'id' || criteria === 'length') {
         return a[criteria] - b[criteria];
       }
     });
@@ -58,66 +70,114 @@ const DataGrid = () => {
     setFilter(e.target.value);
   };
 
-
-  createEffect(() => {
-    localStorage.setItem("sortCriteria", sortCriteria());
-  });
-
-  createEffect(() => {
-    fetchData();
-  }, []);
-
-
-  createEffect(() => {
-    const startIndex = (currentPage() - 1) * pageSize();
-    const endIndex = startIndex + pageSize();
-    const filteredData = data().filter((row) => {
-      return Object.values(row).some((value) => {
-        if (typeof value === "string") {
-          return value.toLowerCase().includes(filter().toLowerCase());
-        } else if (typeof value === "number") {
-          return value === Number(filter()); // Exact match for numbers
-        } else if (value instanceof Date) {
-          const formattedDate = value.toISOString().substring(0, 10);
-          return formattedDate.includes(filter());
-        }
-        return false;
-      });
+  const filteredData = () => data().filter((row) => {
+    return Object.values(row).some((value) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(filter().toLowerCase());
+      } else if (typeof value === 'number') {
+        return value === Number(filter()); // Exact match for numbers
+      } else if (value instanceof Date) {
+        const formattedDate = value.toISOString().substring(0, 10);
+        return formattedDate.includes(filter());
+      }
+      return false;
     });
-    setData(filteredData.slice(startIndex, endIndex));
   });
 
-
-  onCleanup(() => {
-    // Clean up any resources or subscriptions here
-  });
-
+  const columns = [
+    {
+      name: 'Name',
+      cell: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Color',
+      cell: (row) => row.color,
+      sortable: true,
+    },
+    {
+      name: 'Length',
+      cell: (row) => row.length,
+      sortable: true,
+    },
+    {
+      name: 'Date Created',
+      cell: (row) => row.date_created,
+      sortable: true,
+    },
+    {
+      name: 'Date Updated',
+      cell: (row) => row.date_updated,
+      sortable: true,
+    },
+    {
+      name: 'ID',
+      cell: (row) => row.id,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row) => (
+        <div>
+          <div class="">
+            <Link
+              href={`/item/${row.id}`}
+              class="btn btn-primary"
+              onClick={() => {}}
+            >
+              View
+            </Link>
+            <Link
+              href={`/item/${row.id}/edit`}
+              class="btn btn-secondary"
+              onClick={() => {}}
+            >
+              Edit
+            </Link>
+            <button
+              class="btn btn-danger"
+              onClick={() => {
+                // Handle delete logic here
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div>
-      <div className="mb-4 d-flex align-items-center">
-        <label className="mr-2">Filter by:</label>
-        <div className="d-flex align-items-center">
-          <input
-            type="text"
-            value={filter()}
-            onInput={handleFilterChange}
-            className="border border-gray-300 p-1 rounded-md mr-2"
-          />
-        </div>
-        <label className="mr-2">Rows per page:</label>
-        <div className="d-flex align-items-center">
-          <select
-            value={pageSize()}
-            onChange={(e) => handlePerPageChange(Number(e.target.value))}
-            className="border border-gray-300 p-1 rounded-md"
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-          </select>
+      <div>
+        <div class="mb-4 d-flex align-items-center">
+          <label class="mr-2">Filter by:</label>
+          <div class="d-flex align-items-center">
+            <input
+              type="text"
+              value={filter()}
+              onInput={handleFilterChange}
+              class="border border-gray-300 p-1 rounded-md mr-2"
+            />
+          </div>
+          <label class="mr-2">Rows per page:</label>
+          <div class="d-flex align-items-center">
+            <select
+              value={pageSize()}
+              onChange={(e) => handlePerPageChange(Number(e.target.value))}
+              class="border border-gray-300 p-1 rounded-md"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+            </select>
+          </div>
         </div>
       </div>
+
+
+      
 
       <table className="table">
         {/* Table headers */}
@@ -135,7 +195,7 @@ const DataGrid = () => {
 
         {/* Table body */}
         <tbody>
-          {data().map((row) => (
+          {data().slice(startIndex(), endIndex()).map((row) => (
             <tr key={row.id}>
               <td>{row.name}</td>
               <td>{row.color}</td>
@@ -159,6 +219,16 @@ const DataGrid = () => {
           ))}
         </tbody>
       </table>
+
+      <LightPaginationNav
+        currentPage={currentPage()}
+        setCurrentPage={setCurrentPage}
+        pageSize={pageSize()}
+        limit={1}
+        totalItems={data().length}
+        showStepOptions={true}
+        className="mt-4"
+      />
     </div>
   );
 };

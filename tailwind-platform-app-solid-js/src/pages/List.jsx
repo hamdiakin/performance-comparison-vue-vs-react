@@ -1,6 +1,7 @@
 import { createSignal, onCleanup, createEffect } from "solid-js";
 import { Link } from "@solidjs/router";
-import { LightPaginationNav, paginate } from 'solid-paginate'
+import { LightPaginationNav,PaginationNav,DarkPaginationNav, paginate } from 'solid-paginate'
+import 'solid-paginate/styles'
 
 import Axios from "axios";
 
@@ -9,6 +10,10 @@ const List = () => {
   const [currentPage, setCurrentPage] = createSignal(1);
   const pageSize = 7;
   const [sortCriteria, setSortCriteria] = createSignal("name"); 
+
+  const paginatedItems = () =>
+  paginate({ items: sortedData(), pageSize, currentPage: currentPage() })
+  
 
   createEffect(() => {
     // Load the saved sorting criteria from localStorage (if available)
@@ -84,13 +89,15 @@ const List = () => {
           </Link>
         </div>
       ))}
-      {/* <Pagination
+      <LightPaginationNav
+        currentPage={currentPage()}
+        setCurrentPage={setCurrentPage}
         pageSize={pageSize}
-        current={currentPage()}
-        total={sortedData().length}
-        onChange={setCurrentPage}
+        limit={1}
+        totalItems={sortedData().length}
+        showStepOptions={true}
         className="mt-4"
-      /> */}
+      />
     </div>
   );
 };

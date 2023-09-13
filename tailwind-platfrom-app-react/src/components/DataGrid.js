@@ -122,27 +122,25 @@ const DataGrid = () => {
     {
       name: "Actions",
       cell: (row) => (
-        <div className="space-x-2">
+        <div class="flex space-x-2">
           <Link
             to={`/item/${row.id}`}
+            class="text-blue-700 hover:text-gray-800"
           >
             View
           </Link>
           <Link
             to={`/item/${row.id}/edit`}
+            class="text-gray-700 hover:text-gray-800"
           >
             Edit
           </Link>
-          <button
-            onClick={() => {
-            }}
-          >
+          <button onClick={() => {}} class="text-red-500 hover:text-red-600">
             Delete
           </button>
         </div>
       ),
     },
-    
   ];
 
   return (

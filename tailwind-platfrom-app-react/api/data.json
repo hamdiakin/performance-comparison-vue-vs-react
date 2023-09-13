@@ -9078,21 +9078,17 @@
     },
     {
       "id": 461,
-      "platformName": "Ailane",
-      "inventoryDate": "09.06.2021",
-      "length": 78,
-      "width": 79,
-      "height": 59,
-      "maxSpeed": 96,
-      "minSpeed": 93,
+      "platformName": "Abatz",
+      "inventoryDate": "04.09.2023",
+      "length": 1,
+      "width": 1,
+      "height": 1,
+      "maxSpeed": 1,
+      "minSpeed": 1,
       "platformType": [
         {
           "id": 1,
           "name": "Platform A"
-        },
-        {
-          "id": 2,
-          "name": "Platform B"
         }
       ]
     },
@@ -14757,10 +14753,9 @@
       ]
     },
     {
-      "id": 747,
-      "platformName": "Aibox",
+      "platformName": "Aibox2",
       "inventoryDate": "24.09.2020",
-      "length": 34,
+      "length": "2",
       "width": 24,
       "height": 62,
       "maxSpeed": 44,
@@ -14768,13 +14763,10 @@
       "platformType": [
         {
           "id": 1,
-          "name": "Platform A"
-        },
-        {
-          "id": 2,
           "name": "Platform B"
         }
-      ]
+      ],
+      "id": 747
     },
     {
       "id": 748,
@@ -16165,26 +16157,6 @@
       "height": 71,
       "maxSpeed": 65,
       "minSpeed": 23,
-      "platformType": [
-        {
-          "id": 1,
-          "name": "Platform A"
-        },
-        {
-          "id": 2,
-          "name": "Platform B"
-        }
-      ]
-    },
-    {
-      "id": 818,
-      "platformName": "Agimba",
-      "inventoryDate": "20.01.2021",
-      "length": 26,
-      "width": 36,
-      "height": 16,
-      "maxSpeed": 90,
-      "minSpeed": 21,
       "platformType": [
         {
           "id": 1,
@@ -17677,26 +17649,6 @@
       ]
     },
     {
-      "id": 894,
-      "platformName": "Agimba",
-      "inventoryDate": "20.04.2022",
-      "length": 52,
-      "width": 22,
-      "height": 39,
-      "maxSpeed": 47,
-      "minSpeed": 47,
-      "platformType": [
-        {
-          "id": 1,
-          "name": "Platform A"
-        },
-        {
-          "id": 2,
-          "name": "Platform B"
-        }
-      ]
-    },
-    {
       "id": 895,
       "platformName": "InnoZ",
       "inventoryDate": "23.05.2023",
@@ -19025,26 +18977,6 @@
       "height": 74,
       "maxSpeed": 80,
       "minSpeed": 68,
-      "platformType": [
-        {
-          "id": 1,
-          "name": "Platform A"
-        },
-        {
-          "id": 2,
-          "name": "Platform B"
-        }
-      ]
-    },
-    {
-      "id": 962,
-      "platformName": "Abatz",
-      "inventoryDate": "31.03.2022",
-      "length": 36,
-      "width": 95,
-      "height": 35,
-      "maxSpeed": 31,
-      "minSpeed": 55,
       "platformType": [
         {
           "id": 1,

@@ -11,6 +11,8 @@
     "axios": "^1.5.0",
     "bootstrap": "^5.3.1",
     "bootstrap-table": "^1.22.1",
+    "date-fns": "^2.30.0",
+    "formik": "^2.4.4",
     "jquery": "^3.7.1",
     "json-server": "^0.17.3",
     "postcss-cli": "^10.1.0",
@@ -18,13 +20,15 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.8.0",
     "react-data-table-component": "^7.5.4",
+    "react-datepicker": "^4.17.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.4",
     "source-map-loader": "^4.0.1",
     "tailwindcss": "^3.3.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

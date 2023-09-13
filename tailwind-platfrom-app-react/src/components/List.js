@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Pagination from "rc-pagination";
 import "rc-pagination/assets/index.css";
 import Axios from "axios";
-import Select from "react-select";
 import "./List.css";
 
 const List = () => {

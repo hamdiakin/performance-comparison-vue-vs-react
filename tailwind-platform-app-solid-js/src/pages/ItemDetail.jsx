@@ -55,8 +55,14 @@ const ItemDetail = () => {
   
 
       <div class="bg-white shadow-md p-4">
-          <h2 class="text-xl font-semibold">{item()[0].name}</h2>
-          <p class="text-gray-600">Color: {item()[0].color}</p>
+          <h2 class="text-xl font-semibold">Platform Name: {item()[0].platformName}</h2>
+          <p class="text-gray-600">Platform ID: {item()[0].id}</p>
+          <p class="text-gray-600">Inventory Date: {item()[0].inventoryDate}</p>
+          <p class="text-gray-600">Length: {item()[0].length}</p>
+          <p class="text-gray-600">Width: {item()[0].width}</p>
+          <p class="text-gray-600">Height: {item()[0].height}</p>
+          <p class="text-gray-600">Max Speed: {item()[0].maxSpeed}</p>
+          <p class="text-gray-600">Min Speed: {item()[0].minSpeed}</p>
           {/* Display other item attributes here */}
           <div class="mt-4">
             <button onClick={() => navigate(`/`)} class="text-blue-500 hover:underline">

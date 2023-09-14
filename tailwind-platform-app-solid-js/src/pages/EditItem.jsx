@@ -11,9 +11,14 @@ const ErrorMessage = ({ error }) => <span class="error-message">{error}</span>;
 const EditItem = () => {
   const { id } = useParams();
   const [formData, setFormData] = createSignal({
-    name: "",
-    color: "",
+    platformName: "",
+    inventoryDate: "",
     length: 0,
+    width: 0,
+    height: 0,
+    maxSpeed: 0,
+    minSpeed: 0,
+    platformType: [{}]
     // Add more form fields for other attributes here
   });
   const [isNameValid, setIsNameValid] = createSignal(true);
@@ -38,9 +43,14 @@ const EditItem = () => {
     Axios.get(`http://localhost:4000/platforms/${id}`)
       .then((response) => {
         setFormData({
-          name: response.data.name,
-          color: response.data.color,
+          platformName: response.data.platformName,
+          inventoryDate: response.data.inventoryDate,
           length: response.data.length,
+          width: response.data.width,
+          height: response.data.height,
+          maxSpeed: response.data.maxSpeed,
+          minSpeed: response.data.minSpeed,
+          platformType: response.data.platformType.map((type) => type.name)
           // Set values for other form fields here
         });
       })
@@ -115,14 +125,29 @@ const EditItem = () => {
       <h2 class="text-xl font-semibold">Edit Item</h2>
       <form onSubmit={handleSubmit} use:formSubmit={fn}>
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="name">
-            Name
+          <label class="block text-gray-700 font-bold mb-2" for="platformName">
+            Platform Name
           </label>
           <input
             type="text"
-            id="name"
-            name="name"
-            value={formData().name}
+            id="platformName"
+            name="platformName"
+            value={formData().platformName}
+            onInput={handleInputChange}
+            class="w-full p-2 border rounded"
+            required=""
+          />
+          {!isNameValid() && <div style="color: red;">Platform Name must be at least 10 characters long</div>}
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="inventoryDate">
+            Inventory Date
+          </label>
+          <input
+            type="text"
+            id="inventoryDate"
+            name="inventoryDate"
+            value={formData().inventoryDate}
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
             required=""
@@ -130,32 +155,96 @@ const EditItem = () => {
           {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="color">
-            Color
+          <label class="block text-gray-700 font-bold mb-2" for="length">
+            Length
           </label>
           <input
             type="text"
-            id="color"
-            name="color"
-            value={formData().color}
+            id="length"
+            name="length"
+            value={formData().length}
+            onInput={handleInputChange}
+            class="w-full p-2 border rounded"
+            required=""
+          />
+          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="width">
+            Width
+          </label>
+          <input
+            type="text"
+            id="width"
+            name="width"
+            value={formData().width}
+            onInput={handleInputChange}
+            class="w-full p-2 border rounded"
+            required=""
+          />
+          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="height">
+            Height
+          </label>
+          <input
+            type="text"
+            id="height"
+            name="height"
+            value={formData().height}
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
           {!isColorValid() && <div style="color: red;">Color must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
-          <label class="block text-gray-700 font-bold mb-2" for="length">
-            Length
+          <label class="block text-gray-700 font-bold mb-2" for="maxSpeed">
+            Max Speed
           </label>
           <input
             type="number"
-            id="length"
-            name="length"
-            value={formData().length}
+            id="maxSpeed"
+            name="maxSpeed"
+            value={formData().maxSpeed}
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
           {!isLengthValid() && <div style="color: red;">Length must be a number</div>}
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="minSpeed">
+            Min Speed
+          </label>
+          <input
+            type="text"
+            id="minSpeed"
+            name="minSpeed"
+            value={formData().minSpeed}
+            onInput={handleInputChange}
+            class="w-full p-2 border rounded"
+            required=""
+          />
+          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-bold mb-2" for="platformType">
+            Platform Type
+          </label>
+          <select
+            multiple
+            id="platformType"
+            name="platformType"
+            value={formData().platformType}
+            onChange={handleInputChange}
+            
+            className="w-full p-2 border rounded focus:ring focus:ring-blue-300"
+          >
+            <option value="Platform A">Platform A</option>
+            <option value="Platform B">Platform B</option>
+            {/* Add more options as needed */}
+          </select>
+          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         {/* Add more form fields for other attributes here */}
         <div class="mt-4">

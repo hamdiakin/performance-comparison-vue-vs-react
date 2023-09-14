@@ -10,6 +10,7 @@ const List = () => {
   const [currentPage, setCurrentPage] = createSignal(1);
   const pageSize = 7;
   const [sortCriteria, setSortCriteria] = createSignal("name"); 
+  const [isHovered, setIsHovered] = createSignal(false);
 
   const paginatedItems = () =>
   paginate({ items: sortedData(), pageSize, currentPage: currentPage() })
@@ -51,10 +52,10 @@ const List = () => {
   };
 
   const sortedData = () => [...data()].sort((a, b) => {
-    if (sortCriteria() === "name") {
-      return a.name.localeCompare(b.name);
-    } else if (sortCriteria() === "date_created") {
-      return new Date(a.date_created) - new Date(b.date_created);
+    if (sortCriteria() === "platformName") {
+      return a.platformName.localeCompare(b.platformName);
+    } else if (sortCriteria() === "inventoryDate") {
+      return new Date(a.inventoryDate) - new Date(b.inventoryDate);
     } else if (sortCriteria() === "id") {
       return a.id - b.id;
     }
@@ -66,7 +67,7 @@ const List = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">List of Items</h1>
+      <h1 className="text-2xl font-bold mb-4">List of Platforms</h1>
       <div className="mb-4">
         <label className="mr-2">Sort by:</label>
         <select
@@ -74,16 +75,29 @@ const List = () => {
           onChange={(e) => handleSort(e.target.value)}
           className="border border-gray-300 p-1 rounded-md"
         >
-          <option value="name">Name</option>
-          <option value="date_created">Date Created</option>
+          <option value="platformName">Platform Name</option>
+          <option value="inventoryDate">Inventory Date</option>
           <option value="id">ID</option>
         </select>
       </div>
       {sortedData().slice(startIndex(), endIndex()).map((item) => (
         <div key={item.id} className="bg-white shadow-md p-4 mb-4">
-          <h2 className="text-xl font-semibold">{item.name}</h2>
-          <p className="text-gray-600">Color: {item.color}</p>
+          <h2 className="text-xl font-semibold">Platform Name: {item.platformName}</h2>
           
+          
+            <div class="dropdown">
+            
+              <p>ID: {item.id}</p>
+              <p>Inventory Date: {item.inventoryDate}</p>
+              <button type="button " class=" dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                Platform Type: {item.platformType.map((type) => type.name)}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">{item.platformType.map((type) => type.name)}</a>
+ 
+              </div>
+            </div>
+
             <Link href={`/item/${item.id}`} class="text-blue-500 hover:underline">
             View Details
           </Link>

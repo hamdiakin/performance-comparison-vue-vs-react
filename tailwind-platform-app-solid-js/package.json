@@ -20,8 +20,13 @@
     "@solidjs/router": "^0.7.0",
     "axios": "^1.5.0",
     "bootstrap": "^4.0.0-alpha.6",
+    "fluent-ts-validator": "^3.0.3",
+    "formik": "^2.4.4",
     "react-bootstrap": "^0.32.1",
+    "solid-headless": "^0.13.1",
     "solid-js": "^1.6.10",
-    "solid-paginate": "^0.0.1"
+    "solid-js-form": "^0.1.8",
+    "solid-paginate": "^0.0.1",
+    "yup": "^1.2.0"
   }
 }

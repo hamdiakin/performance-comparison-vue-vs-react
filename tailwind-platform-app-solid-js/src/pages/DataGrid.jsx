@@ -6,7 +6,7 @@ import 'solid-paginate/styles'
 const DataGrid = () => {
   const [data, setData] = createSignal([]);
   const [currentPage, setCurrentPage] = createSignal(1);
-  const [pageSize, setPageSize] = createSignal(5);
+  const [pageSize, setPageSize] = createSignal(10);
   const [sortCriteria, setSortCriteria] = createSignal('name');
   const [filter, setFilter] = createSignal('');
 
@@ -56,9 +56,9 @@ const DataGrid = () => {
 
   const sortData = (data, criteria) => {
     return [...data].sort((a, b) => {
-      if (criteria === 'name') {
-        return a.name.localeCompare(b.name);
-      } else if (criteria === 'date_created' || criteria === 'date_updated') {
+      if (criteria === 'platformName') {
+        return a.platformName.localeCompare(b.platformName);
+      } else if (criteria === 'inventoryDate' || criteria === 'inventoryDate') {
         return new Date(a[criteria]) - new Date(b[criteria]);
       } else if (criteria === 'id' || criteria === 'length') {
         return a[criteria] - b[criteria];
@@ -84,111 +84,56 @@ const DataGrid = () => {
     });
   });
 
-  const columns = [
-    {
-      name: 'Name',
-      cell: (row) => row.name,
-      sortable: true,
-    },
-    {
-      name: 'Color',
-      cell: (row) => row.color,
-      sortable: true,
-    },
-    {
-      name: 'Length',
-      cell: (row) => row.length,
-      sortable: true,
-    },
-    {
-      name: 'Date Created',
-      cell: (row) => row.date_created,
-      sortable: true,
-    },
-    {
-      name: 'Date Updated',
-      cell: (row) => row.date_updated,
-      sortable: true,
-    },
-    {
-      name: 'ID',
-      cell: (row) => row.id,
-      sortable: true,
-    },
-    {
-      name: 'Actions',
-      cell: (row) => (
-        <div>
-          <div class="">
-            <Link
-              href={`/item/${row.id}`}
-              class="btn btn-primary"
-              onClick={() => {}}
-            >
-              View
-            </Link>
-            <Link
-              href={`/item/${row.id}/edit`}
-              class="btn btn-secondary"
-              onClick={() => {}}
-            >
-              Edit
-            </Link>
-            <button
-              class="btn btn-danger"
-              onClick={() => {
-                // Handle delete logic here
-              }}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      ),
-    },
-  ];
+
 
   return (
-    <div>
-      <div>
+    <div class='bg-white p-4 shadow-md rounded-lg'>
+      <div class='mb-4 flex items-center justify-evenly'>
         <div class="mb-4 d-flex align-items-center">
           <label class="mr-2">Filter by:</label>
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center pr-5">
             <input
               type="text"
               value={filter()}
               onInput={handleFilterChange}
               class="border border-gray-300 p-1 rounded-md mr-2"
             />
+            <button
+            
+            className="px-2 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+          >
+            Clear
+          </button>
           </div>
-          <label class="mr-2">Rows per page:</label>
+          <label class="m-2 pl-5">Rows per page:</label>
           <div class="d-flex align-items-center">
             <select
               value={pageSize()}
               onChange={(e) => handlePerPageChange(Number(e.target.value))}
               class="border border-gray-300 p-1 rounded-md"
             >
-              <option value={5}>5</option>
               <option value={10}>10</option>
-              <option value={15}>15</option>
+              <option value={20}>20</option>
+              <option value={150}>150</option>
             </select>
           </div>
         </div>
       </div>
 
-
-      
-
       <table className="table">
         {/* Table headers */}
         <thead>
           <tr>
-            <th onClick={() => handleSort("name")}>Name</th>
-            <th onClick={() => handleSort("color")}>Color</th>
-            <th onClick={() => handleSort("length")}>Length</th>
-            <th onClick={() => handleSort("date_created")}>Date Created</th>
-            <th onClick={() => handleSort("date_updated")}>Date Updated</th>
+            <th onClick={() => handleSort("platformName")}>Platform Name</th>
             <th onClick={() => handleSort("id")}>ID</th>
+            <th onClick={() => handleSort("inventoryDate")}>Inventory Date</th>
+            <th onClick={() => handleSort("length")}>Length</th>
+            <th onClick={() => handleSort("width")}>Width</th>
+            <th onClick={() => handleSort("height")}>Height</th>
+            <th onClick={() => handleSort("maxSpeed")}>Max Speed</th>
+            <th onClick={() => handleSort("minSpeed")}>Min Speed</th>
+           
+
             <th>Actions</th>
           </tr>
         </thead>
@@ -197,17 +142,19 @@ const DataGrid = () => {
         <tbody>
           {data().slice(startIndex(), endIndex()).map((row) => (
             <tr key={row.id}>
-              <td>{row.name}</td>
-              <td>{row.color}</td>
-              <td>{row.length}</td>
-              <td>{row.date_created}</td>
-              <td>{row.date_updated}</td>
+              <td>{row.platformName}</td>
               <td>{row.id}</td>
+              <td>{row.inventoryDate}</td>
+              <td>{row.length}</td>
+              <td>{row.width}</td>
+              <td>{row.height}</td>
+              <td>{row.maxSpeed}</td>
+              <td>{row.minSpeed}</td>
+              
               <td>
-                <Link href={`/item/${row.id}`}>View</Link>
-                <Link href={`/item/${row.id}/edit`}>Edit</Link>
-                <button
-                  className="btn btn-danger"
+                <Link href={`/item/${row.id}`} class='m-1' style={{color:'blue'}}>View</Link>
+                <Link href={`/item/${row.id}/edit`} class='m-1' style={{color:'black'}}>Edit</Link>
+                <button class='m-1 ' style={{color:'red'}}
                   onClick={() => {
                     // Handle delete logic here
                   }}

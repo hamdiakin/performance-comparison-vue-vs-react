@@ -1,7 +1,6 @@
 import { createResource } from "solid-js";
 import { A } from "@solidjs/router";
 
-import Card from "../components/Card";
 
 const fetchPlatforms = async () => {
   const res = await fetch('http://localhost:4000/platforms')

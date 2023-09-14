@@ -1,6 +1,12 @@
 import { createSignal, onCleanup, createEffect } from "solid-js";
-import { Link, useParams } from "@solidjs/router";
+import { Link, useParams, useNavigate } from "@solidjs/router";
 import Axios from "axios";
+import { useForm } from "../components/Validation";
+import { createStore } from "solid-js/store";
+
+
+const ErrorMessage = ({ error }) => <span class="error-message">{error}</span>;
+
 
 const EditItem = () => {
   const { id } = useParams();
@@ -10,6 +16,22 @@ const EditItem = () => {
     length: 0,
     // Add more form fields for other attributes here
   });
+  const [isNameValid, setIsNameValid] = createSignal(true);
+  const [isColorValid, setIsColorValid] = createSignal(true);
+  const [isLengthValid, setIsLengthValid] = createSignal(true);
+  const navigate = useNavigate()
+
+
+  const { validate, formSubmit, errors } = useForm({
+    errorClass: "error-input"
+  });
+  const [fields, setFields] = createStore();
+  const fn = (form) => {
+    // form.submit()
+    console.log("Done");
+  };
+  
+
 
   createEffect(() => {
     // Fetch the item's data for pre-filling the form
@@ -29,20 +51,59 @@ const EditItem = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    console.log(name)
+    if(name === "name"){
+      console.log(value.length)
+      if(value.length < 10){
+        setIsNameValid(false);
+      }
+      else{
+        setIsNameValid(true);
+      }
+    }
+    else if (name === "color"){
+      console.log(value.length)
+      if(value.length < 10){
+        setIsColorValid(false);
+      }
+      else{
+        setIsColorValid(true);
+      }
+    }
+    else if (name === "length"){
+      
+      if(isNaN(value)){
+        setIsLengthValid(false);
+      }
+      else{
+        setIsLengthValid(true);
+      }
+    }
+    if(isNameValid() && isColorValid() && isLengthValid())
+    {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Send an API request to update the item
-      await Axios.put(`http://localhost:4000/platforms/${id}`, formData());
-      // Redirect to the item detail page after successful update
-      // Assuming you have access to a `navigate` function
-      navigate(`/item/${id}`);
-    } catch (error) {
-      console.error("Error updating item:", error);
+    if(isNameValid() && isColorValid() && isLengthValid())
+    {
+      try {
+        // Send an API request to update the item
+        await Axios.put(`http://localhost:4000/platforms/${id}`, formData());
+        // Redirect to the item detail page after successful update
+        // Assuming you have access to a `navigate` function
+        navigate(`/item/${id}`);
+      } catch (error) {
+        console.error("Error updating item:", error);
+      }
     }
+    else{
+      console.log("Invalid Inputs")
+    }
+    
   };
 
   onCleanup(() => {
@@ -52,7 +113,7 @@ const EditItem = () => {
   return (
     <div class="bg-white shadow-md p-4">
       <h2 class="text-xl font-semibold">Edit Item</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} use:formSubmit={fn}>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="name">
             Name
@@ -64,7 +125,9 @@ const EditItem = () => {
             value={formData().name}
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
+            required=""
           />
+          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="color">
@@ -78,6 +141,7 @@ const EditItem = () => {
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
+          {!isColorValid() && <div style="color: red;">Color must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="length">
@@ -91,6 +155,7 @@ const EditItem = () => {
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
+          {!isLengthValid() && <div style="color: red;">Length must be a number</div>}
         </div>
         {/* Add more form fields for other attributes here */}
         <div class="mt-4">

@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-4">List of Items</h1>
+    <h1 class="text-2xl font-bold mb-4">List of Platforms</h1>
     <!-- Sorting options -->
     <div class="mb-4">
       <label for="sortBy" class="mr-2">Sort by:</label>
       <select v-model="sortBy" @change="updateSortCriteria">
-        <option value="name">Name</option>
-        <option value="date_created">Date Created</option>
-        <option value="id">ID</option>
+        <option value="platformName">Platform Name</option>
+        <option value="inventoryDate">Date Created</option>
+        <option value="platformId">ID</option>
       </select>
     </div>
 
@@ -16,14 +16,39 @@
       <div
         v-for="item in sortedAndPaginatedData"
         :key="item.id"
-        class="bg-white shadow-md p-4 mb-4"
+        class="bg-white shadow-md p-4 mb-4 rounded-lg"
       >
-        <h2 class="text-xl font-semibold">{{ item.name }}</h2>
-        <p class="text-gray-600">Color: {{ item.color }}</p>
-        <!-- Add more item attributes here -->
-        <router-link :to="'/item/' + item.id" class="text-blue-500 hover:underline"
-          >View Details</router-link
+        <h2 class="text-xl font-semibold mb-2">
+          Platform Name: {{ item.platformName }}
+        </h2>
+        <p class="text-gray-600 mb-2">Platform ID: {{ item.id }}</p>
+        <p class="text-gray-600 mb-2">Inventory Date: {{ item.inventoryDate }}</p>
+        <div class="mb-4 relative">
+          <label class="text-gray-600">Platform Type:</label>
+          <div class="custom-dropdown">
+            <span
+              @click="toggleDropdown"
+              class="custom-dropdown-toggle cursor-pointer"
+            >
+              {{ item.platformType[0].name }}
+            </span>
+            <div v-if="isOpen" class="custom-dropdown-content">
+              <div
+                v-for="type in item.platformType"
+                :key="type.id"
+                class="custom-dropdown-option"
+              >
+                {{ type.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <router-link
+          :to="'/item/' + item.id"
+          class="text-blue-500 hover:underline"
         >
+          View Details
+        </router-link>
       </div>
     </div>
 
@@ -47,16 +72,15 @@ import '@hennge/vue3-pagination/dist/vue3-pagination.css'
 
 export default {
   components: {
-    pagination: Pagination // Use pagination component from vue3-pagination
+    pagination: Pagination
   },
 
   setup() {
-    const data = ref([]) // Store fetched data here
-    const currentPage = ref(1) // Current page for pagination
-    const pageSize = 7 // Number of items per page
-    const sortBy = ref('') // Sort by criteria (e.g., 'name', 'date_created', 'id')
+    const data = ref([])
+    const currentPage = ref(1)
+    const pageSize = 7
+    const sortBy = ref('platformName') // Set the initial sorting criteria
 
-    // Fetch data and initialize the component
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:3004/platforms')
@@ -67,14 +91,13 @@ export default {
     }
 
     const sortedAndPaginatedData = computed(() => {
-      // Implement sorting and pagination logic here
       let sortedData = [...data.value]
 
-      if (sortBy.value === 'name') {
-        sortedData.sort((a, b) => a.name.localeCompare(b.name))
-      } else if (sortBy.value === 'date_created') {
-        sortedData.sort((a, b) => new Date(a.date_created) - new Date(b.date_created))
-      } else if (sortBy.value === 'id') {
+      if (sortBy.value === 'platformName') {
+        sortedData.sort((a, b) => a.platformName.localeCompare(b.platformName))
+      } else if (sortBy.value === 'inventoryDate') {
+        sortedData.sort((a, b) => new Date(a.inventoryDate) - new Date(b.inventoryDate))
+      } else if (sortBy.value === 'platformId') {
         sortedData.sort((a, b) => a.id - b.id)
       }
 
@@ -86,22 +109,19 @@ export default {
       return Math.ceil(data.value.length / pageSize)
     })
 
-    // Update sorting criteria without fetching data
     const updateSortCriteria = () => {
-      // Update sorting criteria here
+      // Update sorting criteria when changed
+      fetchData() // Fetch data again after changing the sorting criteria
     }
 
-    // Handle page change
     const handlePageChange = (newPage) => {
       currentPage.value = newPage
     }
 
-    // Fetch data on component creation
-    fetchData()
+    fetchData() // Fetch data on component creation
 
-    // Watch for changes in sorting criteria and reset to the first page
     watch(sortBy, () => {
-      currentPage.value = 1
+      currentPage.value = 1 // Reset to the first page when changing sorting criteria
     })
 
     return {
@@ -112,7 +132,12 @@ export default {
       sortedAndPaginatedData,
       totalPages,
       updateSortCriteria,
-      handlePageChange
+      handlePageChange,
+      toggleDropdown() {
+        // Define toggleDropdown method
+        isOpen.value = !isOpen.value
+      },
+      isOpen: ref(false) // Initialize isOpen as a ref
     }
   }
 }

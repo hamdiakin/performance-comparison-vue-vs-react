@@ -1,44 +1,7 @@
 <template>
   <b-container fluid>
     <!-- User Interface controls -->
-    <b-row>
-      <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Sort"
-          label-for="sort-by-select"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-          v-slot="{ ariaDescribedby }"
-        >
-          <b-input-group size="sm">
-            <b-form-select
-              id="sort-by-select"
-              v-model="sortBy"
-              :options="sortOptions"
-              :aria-describedby="ariaDescribedby"
-              class="w-75"
-            >
-              <template #first>
-                <option value="">-- none --</option>
-              </template>
-            </b-form-select>
-
-            <b-form-select
-              v-model="sortDesc"
-              :disabled="!sortBy"
-              :aria-describedby="ariaDescribedby"
-              size="sm"
-              class="w-25"
-            >
-              <option :value="false">Asc</option>
-              <option :value="true">Desc</option>
-            </b-form-select>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-
+    <b-row class="mb-4 justify-content-center">
       <b-col lg="6" class="my-1">
         <b-form-group
           label="Filter"
@@ -63,7 +26,7 @@
         </b-form-group>
       </b-col>
 
-      <b-col sm="5" md="6" class="my-1">
+      <b-col lg="6" class="my-1">
         <b-form-group
           label="Per page"
           label-for="per-page-select"
@@ -100,39 +63,46 @@
       @filtered="onFiltered"
     >
       <!-- Customize the columns as needed -->
-      <template #cell(name)="row">
-        {{ row.item.name }}
+      <template #cell(platformName)="row">
+        {{ row.item.platformName }}
       </template>
-      <template #cell(color)="row">
-        {{ row.item.color }}
+      <template #cell(id)="row">
+        {{ row.item.id }}
+      </template>
+      <template #cell(inventoryDate)="row">
+        {{ row.item.inventoryDate }}
       </template>
       <template #cell(length)="row">
         {{ row.item.length }}
       </template>
-      <template #cell(date_created)="row">
-        {{ row.item.date_created }}
+      <template #cell(width)="row">
+        {{ row.item.width }}
       </template>
-      <template #cell(date_updated)="row">
-        {{ row.item.date_updated }}
+      <template #cell(height)="row">
+        {{ row.item.height }}
       </template>
-      <template #cell(location)="row">
-        {{ row.item.location }}
+      <template #cell(maxSpeed)="row">
+        {{ row.item.maxSpeed }}
+      </template>
+      <template #cell(minSpeed)="row">
+        {{ row.item.minSpeed }}
       </template>
       <template #cell(actions)="row">
         <!-- Add your action buttons here -->
-        <b-button size="sm" @click="editItem(row.item)">Edit</b-button>
-        <b-button size="sm" @click="deleteItem(row.item)">Delete</b-button>
+        <b-button size="sm" @click="viewItem(row.item)" variant="success">View</b-button>
+        <b-button size="sm" @click="editItem(row.item)" variant="primary">Edit</b-button>
+        <b-button size="sm" @click="confirmDelete(row.item)" variant="danger">Delete</b-button>
       </template>
     </b-table>
 
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        align="fill"
-        size="sm"
-        class="my-0"
-      ></b-pagination>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
+      align="fill"
+      size="sm"
+      class="my-0"
+    ></b-pagination>
   </b-container>
 </template>
 
@@ -144,12 +114,14 @@ export default {
     return {
       data: [], // Store your data here
       fields: [
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'color', label: 'Color', sortable: true },
+        { key: 'platformName', label: 'Platform Name', sortable: true },
+        { key: 'id', label: 'ID', sortable: true },
+        { key: 'inventoryDate', label: 'Inventory Date', sortable: true },
         { key: 'length', label: 'Length', sortable: true },
-        { key: 'date_created', label: 'Date Created', sortable: true },
-        { key: 'date_updated', label: 'Date Updated', sortable: true },
-        { key: 'location', label: 'Location', sortable: true },
+        { key: 'width', label: 'Width', sortable: true },
+        { key: 'height', label: 'Height', sortable: true },
+        { key: 'maxSpeed', label: 'Max Speed', sortable: true },
+        { key: 'minSpeed', label: 'Min Speed', sortable: true },
         { key: 'actions', label: 'Actions' } // Added actions column
       ],
       sortBy: '',
@@ -199,10 +171,27 @@ export default {
     editItem(item) {
       // Handle edit item action
       console.log('Edit item:', item)
+      this.$router.push(`/item/${item.id}`)
+    },
+    confirmDelete(item) {
+      // You can display a confirmation dialog here
+      if (confirm(`Are you sure you want to delete ${item.platformName}?`)) {
+        // Perform the delete action, for example, making an API request
+        this.deleteItem(item)
+      }
     },
     deleteItem(item) {
-      // Handle delete item action
-      console.log('Delete item:', item)
+      // Implement the delete logic here, for example, making an API request
+      // After successful deletion, you can update the view or take any other action
+      console.log(`Deleted item with ID ${item.id}`)
+
+      // If you want to refresh the data after deletion, you can call fetchData() again
+      this.fetchData()
+    },
+    viewItem(item) {
+      // Handle view item action
+      console.log('View item:', item)
+      this.$router.push(`/item/${item.id}`)
     },
     clearFilter() {
       this.filter = ''

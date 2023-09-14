@@ -10,7 +10,7 @@ const routes = [
   { path: "/", component: List },
   { path: "/item/:id", component: ItemDetail },
   { path: "/item/:id/edit", component: EditItem },
-  { path: "/grid", component: DataGrid },
+  { path: "/datagrid", component: DataGrid },
 ];
 
 const router = createRouter({

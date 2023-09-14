@@ -1097,26 +1097,6 @@
       ]
     },
     {
-      "id": 58,
-      "platformName": "DabZ",
-      "inventoryDate": "2023-09-06",
-      "length": 12,
-      "width": 8,
-      "height": 66,
-      "maxSpeed": 98,
-      "minSpeed": 45,
-      "platformType": [
-        {
-          "id": 1,
-          "name": "Platform A"
-        },
-        {
-          "id": 2,
-          "name": "Platform B"
-        }
-      ]
-    },
-    {
       "id": 59,
       "platformName": "Flashspan",
       "inventoryDate": "16.04.2021",

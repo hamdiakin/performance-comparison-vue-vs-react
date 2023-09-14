@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-white p-4 shadow-md rounded-lg">
     <h1 class="text-2xl font-bold mb-4">List of Platforms</h1>
     <!-- Sorting options -->
     <div class="mb-4">
@@ -18,39 +18,27 @@
         :key="item.id"
         class="bg-white shadow-md p-4 mb-4 rounded-lg"
       >
-        <h2 class="text-xl font-semibold mb-2">
-          Platform Name: {{ item.platformName }}
-        </h2>
+        <h2 class="text-xl font-semibold mb-2">Platform Name: {{ item.platformName }}</h2>
         <p class="text-gray-600 mb-2">Platform ID: {{ item.id }}</p>
         <p class="text-gray-600 mb-2">Inventory Date: {{ item.inventoryDate }}</p>
         <div class="mb-4 relative">
           <label class="text-gray-600">Platform Type:</label>
           <div class="custom-dropdown">
-            <span
-              @click="toggleDropdown"
-              class="custom-dropdown-toggle cursor-pointer"
-            >
+            <span @click="toggleDropdown" class="custom-dropdown-toggle cursor-pointer">
               {{ item.platformType[0].name }}
             </span>
             <div v-if="isOpen" class="custom-dropdown-content">
-              <div
-                v-for="type in item.platformType"
-                :key="type.id"
-                class="custom-dropdown-option"
-              >
+              <div v-for="type in item.platformType" :key="type.id" class="custom-dropdown-option">
                 {{ type.name }}
               </div>
             </div>
           </div>
         </div>
-        <router-link
-          :to="'/item/' + item.id"
-          class="text-blue-500 hover:underline"
-        >
+        <router-link :to="'/item/' + item.id" class="text-blue-500 hover:underline">
           View Details
         </router-link>
       </div>
-    </div>
+    </div>  
 
     <!-- Pagination -->
     <pagination

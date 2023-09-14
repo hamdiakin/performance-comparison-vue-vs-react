@@ -1,7 +1,8 @@
 <template>
+  <div class="bg-white p-4 shadow-md rounded-lg">
   <b-container fluid>
     <!-- User Interface controls -->
-    <b-row class="mb-4 justify-content-center">
+    <b-row class="mb-4 justify-evenly">
       <b-col lg="6" class="my-1">
         <b-form-group
           label="Filter"
@@ -99,11 +100,12 @@
       v-model="currentPage"
       :total-rows="totalRows"
       :per-page="perPage"
-      align="fill"
+      align="fill "
       size="sm"
       class="my-0"
     ></b-pagination>
   </b-container>
+</div>
 </template>
 
 <script>

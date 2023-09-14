@@ -1,171 +1,195 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import DataTable from "react-data-table-component";
+import { Link, useNavigate } from "react-router-dom";
+import BootyPagination from "./BootyPagination";
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-
-const EditItem = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const validationSchema = Yup.object().shape({
-    platformName: Yup.string().required("Platform Name is required"),
-    //inventoryDate: Yup.date().nullable().required("Inventory Date is required"),
-    length: Yup.number()
-      .min(1, "Length must be greater than 0")
-      .required("Length is required"),
-    width: Yup.number()
-      .min(1, "Width must be greater than 0")
-      .required("Width is required"),
-    maxSpeed: Yup.number()
-      .min(1, "Max Speed must be greater than 0")
-      .required("Max Speed is required"),
-    minSpeed: Yup.number()
-      .min(1, "Min Speed must be greater than 0")
-      .required("Min Speed is required"),
-    platformType: Yup.array().min(
-      1,
-      "Please select at least one Platform Type"
-    ),
-  });
-
-  const [initialValues, setInitialValues] = useState({
-    platformName: "",
-    inventoryDate: null,
-    length: 0,
-    width: 0,
-    height: 0,
-    maxSpeed: 0,
-    minSpeed: 0,
-    platformType: [],
-  });
-
-  const [selectedDate, setSelectedDate] = useState(null);
+const DataGrid = () => {
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [sortCriteria, setSortCriteria] = useState("platformName");
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    // Fetch the item's data for pre-filling the form
-    Axios.get(`http://localhost:3004/platforms/${id}`)
-      .then((response) => {
-        const data = response.data;
-        const formattedDate = data.inventoryDate
-          ? new Date(data.inventoryDate.split(".").reverse().join("-")) // Convert "15.04.2022" to "2022-04-15"
-          : null;
+    fetchData();
+  }, []);
 
-        setInitialValues({
-          platformName: data.platformName,
-          inventoryDate: formattedDate,
-          length: data.length,
-          width: data.width,
-          height: data.height,
-          maxSpeed: data.maxSpeed,
-          minSpeed: data.minSpeed,
-          platformType: data.platformType.map((type) => type.name),
-        });
-        setSelectedDate(formattedDate);
-      })
-      .catch((error) => {
-        console.error("Error fetching item data:", error);
-      });
-  }, [id]);
+  useEffect(() => {
+    localStorage.setItem("sortCriteria", sortCriteria);
+  }, [sortCriteria]);
 
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit: async (values) => {
-      try {
-        const platformTypeArray = values.platformType.map((name, index) => ({
-          id: index + 1,
-          name,
-        }));
+  const navigate = useNavigate();
 
-        await Axios.put(`http://localhost:3004/platforms/${id}`, {
-          ...values,
-          platformType: platformTypeArray,
-        });
+  const fetchData = async () => {
+    try {
+      const response = await Axios.get("http://localhost:3004/platforms");
+      const sortedData = sortData(response.data, sortCriteria);
+      setData(sortedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-        navigate(`/item/${id}`);
-      } catch (error) {
-        console.error("Error updating item:", error);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  const handleSort = (criteria) => {
+    const sortedData = sortData(data, criteria);
+    setData(sortedData);
+    setSortCriteria(criteria);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
+
+  const sortData = (data, criteria) => {
+    return [...data].sort((a, b) => {
+      if (criteria === "platformName") {
+        return a.platformName.localeCompare(b.platformName);
+      } else if (criteria === "inventoryDate") {
+        return new Date(a[criteria]) - new Date(b[criteria]);
+      } else if (criteria === "id" || criteria === "length") {
+        return a[criteria] - b[criteria];
       }
-    },
+    });
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const handleClearFilter = () => {
+    setFilter(""); // Clear the filter by setting it to an empty string
+  };
+
+  const filteredData = data.filter((row) => {
+    return Object.values(row).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(filter.toLowerCase());
+      } else if (typeof value === "number") {
+        return value === Number(filter); // Exact match for numbers
+      } else if (value instanceof Date) {
+        const formattedDate = value.toISOString().substring(0, 10);
+        return formattedDate.includes(filter);
+      }
+      return false;
+    });
   });
 
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit } =
-    formik;
+  const columns = [
+    {
+      name: "Platform Name",
+      selector: (row) => row.platformName,
+      sortable: true,
+    },
+    {
+      name: "ID",
+      selector: (row) => row.id,
+      sortable: true,
+    },
+    {
+      name: "Inventory Date",
+      selector: (row) => row.inventoryDate,
+      sortable: true,
+    },
+    {
+      name: "Length",
+      selector: (row) => row.length,
+      sortable: true,
+    },
+    {
+      name: "Width",
+      selector: (row) => row.width,
+      sortable: true,
+    },
+    {
+      name: "Height",
+      selector: (row) => row.height,
+      sortable: true,
+    },
+    {
+      name: "Max Speed",
+      selector: (row) => row.maxSpeed,
+      sortable: true,
+    },
+    {
+      name: "Min Speed",
+      selector: (row) => row.minSpeed,
+      sortable: true,
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <div class="flex space-x-2">
+          <Link
+            to={`/item/${row.id}`}
+            class="text-blue-700 hover:text-gray-800"
+          >
+            View
+          </Link>
+          <Link
+            to={`/item/${row.id}/edit`}
+            class="text-gray-700 hover:text-gray-800"
+          >
+            Edit
+          </Link>
+          <button onClick={() => {}} class="text-red-500 hover:text-red-600">
+            Delete
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="bg-white shadow-md p-6 rounded-lg w-96 mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Edit Platform</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="bg-white p-4 shadow-md rounded-lg">
+      <div className="mb-4 flex items-center justify-evenly">
         <div>
-          <label
-            className="block text-gray-700 font-semibold"
-            htmlFor="platformName"
-          >
-            Platform Name
-          </label>
+          <label className="mr-2">Filter by:</label>
           <input
             type="text"
-            id="platformName"
-            name="platformName"
-            value={values.platformName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            className="w-full p-2 border rounded focus:ring focus:ring-blue-300"
+            value={filter}
+            onChange={handleFilterChange}
+            className="border border-gray-300 p-1 rounded-md mr-2"
           />
-          {touched.platformName && errors.platformName && (
-            <p className="text-red-500">{errors.platformName}</p>
-          )}
         </div>
-
         <div>
-          <label
-            className="block text-gray-700 font-semibold"
-            htmlFor="inventoryDate"
+          <label className="mr-2">Rows per page:</label>
+          <select
+            value={pageSize}
+            onChange={(e) => handlePerPageChange(Number(e.target.value))}
+            className="border border-gray-300 p-1 rounded-md"
           >
-            Inventory Date
-          </label>
-          <DatePicker
-            selected={selectedDate}
-            dateFormat="dd.MM.yyyy" // Corrected date format
-            id="inventoryDate"
-            name="inventoryDate"
-            onChange={(date) => {
-              console.log(date);
-              setSelectedDate(date);
-            }}
-            onBlur={handleBlur}
-            className="w-full p-2 border rounded focus:ring focus:ring-blue-300"
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={150}>A Lot</option>
+          </select>
+        </div>
+      </div>
+
+      <DataTable
+        columns={columns}
+        data={filteredData.slice(startIndex, endIndex)}
+        pagination
+        paginationComponent={(props) => (
+          <BootyPagination
+            {...props}
+            totalItems={data.length}
+            itemsPerPage={pageSize}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
           />
-
-          
-          {touched.inventoryDate && errors.inventoryDate && (
-            <p className="text-red-500">{errors.inventoryDate}</p>
-          )}
-        </div>
-
-        {/* Rest of the form fields... */}
-
-        <div className="flex justify-center space-x-2">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-          >
-            Save Changes
-          </button>
-          <Link
-            to={`/item/${id}`}
-            className="bg-blue-500 text-white py-2 px-4 rounded hover-bg-blue-600"
-          >
-            Cancel This P
-          </Link>
-        </div>
-      </form>
+        )}
+      />
     </div>
   );
 };
 
-export default EditItem;
+export default DataGrid;

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import DataTable from "react-data-table-component";
 import { Link, useNavigate } from "react-router-dom";
+import BootyPagination from "./BootyPagination";
 
 const DataGrid = () => {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [sortCriteria, setSortCriteria] = useState("platformName");
   const [filter, setFilter] = useState("");
 
@@ -62,6 +63,10 @@ const DataGrid = () => {
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
+  };
+
+  const handleClearFilter = () => {
+    setFilter(""); // Clear the filter by setting it to an empty string
   };
 
   const filteredData = data.filter((row) => {
@@ -144,42 +149,50 @@ const DataGrid = () => {
   ];
 
   return (
-    <div className="p-4">
-      <div className="mb-4 flex items-center">
-        <label className="mr-2">Filter by:</label>
-        <input
-          type="text"
-          value={filter}
-          onChange={handleFilterChange}
-          className="border border-gray-300 p-1 rounded-md mr-2"
-        />
-        <label className="mr-2">Rows per page:</label>
-        <select
-          value={pageSize}
-          onChange={(e) => handlePerPageChange(Number(e.target.value))}
-          className="border border-gray-300 p-1 rounded-md"
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={15}>15</option>
-        </select>
+    <div className="bg-white p-4 shadow-md rounded-lg">
+      <div className="mb-4 flex items-center justify-evenly">
+        <div>
+          <label className="mr-2">Filter by:</label>
+          <input
+            type="text"
+            value={filter}
+            onChange={handleFilterChange}
+            className="border border-gray-300 p-1 rounded-md mr-2"
+          />
+          <button
+            onClick={handleClearFilter}
+            className="px-2 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+          >
+            Clear
+          </button>
+        </div>
+        <div>
+          <label className="mr-2">Rows per page:</label>
+          <select
+            value={pageSize}
+            onChange={(e) => handlePerPageChange(Number(e.target.value))}
+            className="border border-gray-300 p-1 rounded-md"
+          >
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={150}>A Lot</option>
+          </select>
+        </div>
       </div>
 
       <DataTable
         columns={columns}
         data={filteredData.slice(startIndex, endIndex)}
         pagination
-        paginationServer
-        paginationPerPage={pageSize}
-        paginationTotalRows={filteredData.length}
-        onChangePage={handlePageChange}
-        paginationRowsPerPageOptions={[5, 20, 30]}
-        onChangeRowsPerPage={handlePerPageChange}
-        paginationComponentOptions={{
-          noRowsPerPage: false,
-          pageButtons: 5,
-          paginationActivePage: currentPage,
-        }}
+        paginationComponent={(props) => (
+          <BootyPagination
+            {...props}
+            totalItems={data.length}
+            itemsPerPage={pageSize}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        )}
       />
     </div>
   );

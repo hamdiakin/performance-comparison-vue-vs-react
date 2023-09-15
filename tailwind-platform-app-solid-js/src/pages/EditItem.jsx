@@ -204,7 +204,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isInventoryDateValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isInventoryDateValid() && <div style="color: red;">Inventory Date must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="length">
@@ -219,7 +219,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isLengthValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isLengthValid() && <div style="color: red;">Length must be a number</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="width">
@@ -234,7 +234,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isWidthValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isWidthValid() && <div style="color: red;">Width must be a number</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="height">
@@ -248,7 +248,7 @@ const EditItem = () => {
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
-          {!isHeightValid() && <div style="color: red;">Color must be at least 10 characters long</div>}
+          {!isHeightValid() && <div style="color: red;">Height must be a number</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="maxSpeed">
@@ -262,7 +262,7 @@ const EditItem = () => {
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
-          {!isMaxSpeedValid() && <div style="color: red;">Length must be a number</div>}
+          {!isMaxSpeedValid() && <div style="color: red;">Max Speed must be a number</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="minSpeed">
@@ -277,7 +277,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isMinSpeedValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isMinSpeedValid() && <div style="color: red;">Min Speed must be a number</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="platformType">
@@ -296,7 +296,7 @@ const EditItem = () => {
             <option value="Platform B">Platform B</option>
             {/* Add more options as needed */}
           </select>
-          {!isPlatformTypeValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isPlatformTypeValid() && <div style="color: red;">Platform Type must be at least 10 characters long</div>}
         </div>
         {/* Add more form fields for other attributes here */}
         <div class="mt-4">

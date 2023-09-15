@@ -12,6 +12,7 @@ import ItemDetail from './pages/ItemDetail';
 import List from './pages/List';
 import ListItem from './pages/ListItem';
 import WrongRoute from './pages/WrongRoute';
+import LandingPage from './pages/LandingPage';
 
 
 function App() {
@@ -39,12 +40,13 @@ function App() {
       
 
       <Routes>
-        
+      <Route path="/" component={LandingPage} />
         <Route path="/DataGrid" component={DataGrid} />
         <Route path="/item/:id/edit" component={EditItem} />
         <Route path="/item/:id" component={ItemDetail} />
-        <Route path="/" component={List} />
+        <Route path="/List" component={List} />
         <Route path="*" component={WrongRoute} />
+        
         
       </Routes>
       

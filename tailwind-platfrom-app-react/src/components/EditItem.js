@@ -108,7 +108,7 @@ const EditItem = () => {
     formik;
 
   return (
-    <div className="bg-white shadow-md p-6 rounded-lg w-96 mx-auto">
+    <div className="bg-gray-200 shadow-md p-6 rounded-lg w-96 mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Edit Platform</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

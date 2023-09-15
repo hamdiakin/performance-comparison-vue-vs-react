@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white p-4 shadow-md rounded-lg">
+  <div class="bg-gray-200 p-4 shadow-md rounded-lg">
     <h1 class="text-2xl font-bold mb-4">List of Platforms</h1>
     <!-- Sorting options -->
     <div class="mb-4">
@@ -16,19 +16,24 @@
       <div
         v-for="item in sortedAndPaginatedData"
         :key="item.id"
-        class="bg-white shadow-md p-4 mb-4 rounded-lg"
+        class="bg-white shadow-md p-4 mb-4 rounded-lg transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500 duration-300 ..."
       >
         <h2 class="text-xl font-semibold mb-2">Platform Name: {{ item.platformName }}</h2>
         <p class="text-gray-600 mb-2">Platform ID: {{ item.id }}</p>
         <p class="text-gray-600 mb-2">Inventory Date: {{ item.inventoryDate }}</p>
-        <div class="mb-4 relative">
-          <label class="text-gray-600">Platform Type:</label>
+        <div class="mb-4 flex items-center">
+          <label class="text-gray-600 mr-2">Platform Type:</label>
           <div class="custom-dropdown">
             <span @click="toggleDropdown" class="custom-dropdown-toggle cursor-pointer">
-              {{ item.platformType[0].name }}
+              {{ selectedPlatformType }}
             </span>
             <div v-if="isOpen" class="custom-dropdown-content">
-              <div v-for="type in item.platformType" :key="type.id" class="custom-dropdown-option">
+              <div
+                v-for="type in item.platformType"
+                :key="type.id"
+                class="custom-dropdown-option"
+                @click="selectedPlatformType(type.name)"
+              >
                 {{ type.name }}
               </div>
             </div>
@@ -38,12 +43,12 @@
           View Details
         </router-link>
       </div>
-    </div>  
+    </div>
 
     <!-- Pagination -->
     <pagination
       v-model="currentPage"
-      :pages="totalPages"
+      :page-size="totalPages"
       :range-size="2"
       active-color="#DCEDFF"
       @update:modelValue="handlePageChange"
@@ -68,6 +73,7 @@ export default {
     const currentPage = ref(1)
     const pageSize = 7
     const sortBy = ref('platformName') // Set the initial sorting criteria
+    const selectedPlatformType = ref('') // Initialize selectedPlatformType
 
     const fetchData = async () => {
       try {
@@ -112,6 +118,17 @@ export default {
       currentPage.value = 1 // Reset to the first page when changing sorting criteria
     })
 
+    const isOpen = ref(false) // Initialize isOpen as a ref
+
+    const toggleDropdown = () => {
+      isOpen.value = !isOpen.value
+    }
+
+    const selectPlatformType = (type) => {
+      selectedPlatformType.value = type // Update the selected platform type
+      isOpen.value = false // Close the dropdown
+    }
+
     return {
       data,
       currentPage,
@@ -121,16 +138,14 @@ export default {
       totalPages,
       updateSortCriteria,
       handlePageChange,
-      toggleDropdown() {
-        // Define toggleDropdown method
-        isOpen.value = !isOpen.value
-      },
-      isOpen: ref(false) // Initialize isOpen as a ref
+      toggleDropdown,
+      isOpen,
+      selectedPlatformType
     }
   }
 }
 </script>
 
 <style scoped>
-@import '@/assets/tailwind.css';
+/* Your custom styles here */
 </style>

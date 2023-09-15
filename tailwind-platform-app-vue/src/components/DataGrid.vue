@@ -1,111 +1,112 @@
 <template>
-  <div class="bg-white p-4 shadow-md rounded-lg">
-  <b-container fluid>
-    <!-- User Interface controls -->
-    <b-row class="mb-4 justify-evenly">
-      <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Filter"
-          label-for="filter-input"
-          label-cols-sm="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-input-group size="sm">
-            <b-form-input
-              id="filter-input"
-              v-model="filter"
-              type="search"
-              placeholder="Type to Search"
-            ></b-form-input>
+  <div class="bg-gray-200 p-4 shadow-md rounded-lg">
+    <b-container fluid>
+      <!-- User Interface controls -->
+      <b-row class="mb-4 justify-evenly">
+        <b-col lg="6" class="my-1">
+          <b-form-group
+            label="Filter"
+            label-for="filter-input"
+            label-cols-sm="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-input-group size="sm">
+              <b-form-input
+                id="filter-input"
+                v-model="filter"
+                type="search"
+                placeholder="Type to Search"
+              ></b-form-input>
 
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="clearFilter">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
-      </b-col>
+              <b-input-group-append>
+                <b-button :disabled="!filter" @click="clearFilter" class="bg-red-700">Clear</b-button>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
 
-      <b-col lg="6" class="my-1">
-        <b-form-group
-          label="Per page"
-          label-for="per-page-select"
-          label-cols-sm="6"
-          label-cols-md="4"
-          label-cols-lg="3"
-          label-align-sm="right"
-          label-size="sm"
-          class="mb-0"
-        >
-          <b-form-select
-            id="per-page-select"
-            v-model="perPage"
-            :options="pageOptions"
-            size="sm"
-          ></b-form-select>
-        </b-form-group>
-      </b-col>
-    </b-row>
+        <b-col lg="6" class="my-1">
+          <b-form-group
+            label="Per page"
+            label-for="per-page-select"
+            label-cols-sm="6"
+            label-cols-md="4"
+            label-cols-lg="3"
+            label-align-sm="right"
+            label-size="sm"
+            class="mb-0"
+          >
+            <b-form-select
+              id="per-page-select"
+              v-model="perPage"
+              :options="pageOptions"
+              size="sm"
+            ></b-form-select>
+          </b-form-group>
+        </b-col>
+      </b-row>
 
-    <!-- Main table element -->
-    <b-table
-      :items="sortedAndFilteredData"
-      :fields="fields"
-      :current-page="currentPage"
-      :per-page="perPage"
-      :filter="filter"
-      :filter-included-fields="filterOn"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      stacked="md"
-      show-empty
-      small
-      @filtered="onFiltered"
-    >
-      <!-- Customize the columns as needed -->
-      <template #cell(platformName)="row">
-        {{ row.item.platformName }}
-      </template>
-      <template #cell(id)="row">
-        {{ row.item.id }}
-      </template>
-      <template #cell(inventoryDate)="row">
-        {{ row.item.inventoryDate }}
-      </template>
-      <template #cell(length)="row">
-        {{ row.item.length }}
-      </template>
-      <template #cell(width)="row">
-        {{ row.item.width }}
-      </template>
-      <template #cell(height)="row">
-        {{ row.item.height }}
-      </template>
-      <template #cell(maxSpeed)="row">
-        {{ row.item.maxSpeed }}
-      </template>
-      <template #cell(minSpeed)="row">
-        {{ row.item.minSpeed }}
-      </template>
-      <template #cell(actions)="row">
-        <!-- Add your action buttons here -->
-        <b-button size="sm" @click="viewItem(row.item)" variant="success">View</b-button>
-        <b-button size="sm" @click="editItem(row.item)" variant="primary">Edit</b-button>
-        <b-button size="sm" @click="confirmDelete(row.item)" variant="danger">Delete</b-button>
-      </template>
-    </b-table>
+      <!-- Main table element -->
+      <b-table
+        :items="sortedAndFilteredData"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filter-included-fields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        class="bg-white p-4 shadow-md rounded-lg"
+        stacked="md"
+        show-empty
+        small
+        @filtered="onFiltered"
+      >
+        <!-- Customize the columns as needed -->
+        <template #cell(platformName)="row">
+          {{ row.item.platformName }}
+        </template>
+        <template #cell(id)="row">
+          {{ row.item.id }}
+        </template>
+        <template #cell(inventoryDate)="row">
+          {{ row.item.inventoryDate }}
+        </template>
+        <template #cell(length)="row">
+          {{ row.item.length }}
+        </template>
+        <template #cell(width)="row">
+          {{ row.item.width }}
+        </template>
+        <template #cell(height)="row">
+          {{ row.item.height }}
+        </template>
+        <template #cell(maxSpeed)="row">
+          {{ row.item.maxSpeed }}
+        </template>
+        <template #cell(minSpeed)="row">
+          {{ row.item.minSpeed }}
+        </template>
+        <template #cell(actions)="row">
+          <!-- Replace the action buttons with spaced-out links -->
+          <b-link :to="`/view/${row.item.id}`" class="text-blue-500 hover:text-blue-700  mr-2">View</b-link>
+          <b-link :to="`/edit/${row.item.id}`" class="text-black hover:text-gray-700  mr-2">Edit</b-link>
+          <b-link @click="confirmDelete(row.item)" class="text-red-500 hover:text-red-700 ">Delete</b-link>
+        </template>
+      </b-table>
 
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="totalRows"
-      :per-page="perPage"
-      align="fill "
-      size="sm"
-      class="my-0"
-    ></b-pagination>
-  </b-container>
-</div>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="center"
+        size="sm"
+        class="my-0"
+      ></b-pagination>
+    </b-container>
+  </div>
 </template>
 
 <script>

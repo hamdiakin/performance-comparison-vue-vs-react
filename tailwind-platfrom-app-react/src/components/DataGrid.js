@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import DataTable from "react-data-table-component";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import BootyPagination from "./BootyPagination";
 
 const DataGrid = () => {
@@ -10,6 +10,8 @@ const DataGrid = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sortCriteria, setSortCriteria] = useState("platformName");
   const [filter, setFilter] = useState("");
+
+  const location = useLocation();
 
   useEffect(() => {
     fetchData();
@@ -127,20 +129,25 @@ const DataGrid = () => {
     {
       name: "Actions",
       cell: (row) => (
-        <div class="flex space-x-2">
+        <div className="flex space-x-2">
           <Link
             to={`/item/${row.id}`}
-            class="text-blue-700 hover:text-gray-800"
+            state={{ from: location }} // Set the state.from to the current location
+            className="text-blue-500 hover:text-blue-600"
           >
             View
           </Link>
+
           <Link
             to={`/item/${row.id}/edit`}
-            class="text-gray-700 hover:text-gray-800"
+            className="text-gray-700 hover:text-gray-800"
           >
             Edit
           </Link>
-          <button onClick={() => {}} class="text-red-500 hover:text-red-600">
+          <button
+            onClick={() => {}}
+            className="text-red-500 hover:text-red-600"
+          >
             Delete
           </button>
         </div>
@@ -149,7 +156,7 @@ const DataGrid = () => {
   ];
 
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg">
+    <div className="bg-gray-200 p-4 shadow-md rounded-lg">
       <div className="mb-4 flex items-center justify-evenly">
         <div>
           <label className="mr-2">Filter by:</label>
@@ -157,17 +164,17 @@ const DataGrid = () => {
             type="text"
             value={filter}
             onChange={handleFilterChange}
-            className="border border-gray-300 p-1 rounded-md mr-2"
+            className="border border-gray-300 p-1 rounded-md"
           />
           <button
             onClick={handleClearFilter}
-            className="px-2 py-1 rounded-md bg-red-500 text-white hover:bg-red-600"
+            className="px-2 py-1 rounded-md bg-gray-400 text-white hover:bg-gray-400"
           >
             Clear
           </button>
         </div>
         <div>
-          <label className="mr-2">Rows per page:</label>
+          <label className="mb-2">Rows per page:</label>
           <select
             value={pageSize}
             onChange={(e) => handlePerPageChange(Number(e.target.value))}

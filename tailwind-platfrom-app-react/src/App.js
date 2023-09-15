@@ -5,20 +5,19 @@ import ItemDetail from "./components/ItemDetail";
 import WrongRoute from "./components/WrongRoute";
 import EditItem from "./components/EditItem";
 import DataGrid from "./components/DataGrid";
-
+import LandingPage from "./components/LandingPage";
 
 function App() {
   return (
     <div className="container mx-auto p-4">
       <Routes>
         {/* Route for the list page */}
-        <Route path="/" element={<List />}>
-          {" "}
-        </Route>
+        <Route path="/list" element={<List />}></Route>
         {/* <Route path="/item:id" element={<ItemDetail />}></Route>  */}
         <Route path="/item/:id" element={<ItemDetail />}></Route>
         <Route path="/item/:id/edit" element={<EditItem />}></Route>
         <Route path="/datagrid" element={<DataGrid />}></Route>
+        <Route path="/" element={<LandingPage />}></Route>
         <Route path="*" element={<WrongRoute />}></Route>
       </Routes>
     </div>

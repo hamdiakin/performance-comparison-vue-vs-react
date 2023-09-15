@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Pagination from "rc-pagination";
 import "rc-pagination/assets/index.css";
 import Axios from "axios";
@@ -10,6 +10,8 @@ const List = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 7;
   const [sortCriteria, setSortCriteria] = useState("platformName");
+
+  const location = useLocation();
 
   useEffect(() => {
     const savedSortCriteria = localStorage.getItem("sortCriteria");
@@ -58,12 +60,8 @@ const List = () => {
     setIsOpen(!isOpen);
   };
 
-  const closeDropdown = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg">
+    <div className="bg-gray-200 p-4 shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-4">List of Platforms</h1>
       <div className="mb-4 flex items-center space-x-2">
         <label className="text-gray-700">Sort by:</label>
@@ -78,7 +76,10 @@ const List = () => {
         </select>
       </div>
       {sortedData.slice(startIndex, endIndex).map((item) => (
-        <div key={item.id} className="bg-white shadow-md p-4 mb-4 rounded-lg">
+        <div
+          key={item.id}
+          className="bg-white shadow-md p-4 mb-4 rounded-lg transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:bg-indigo-500 duration-300 ..."
+        >
           <h2 className="text-xl font-semibold mb-2">
             Platform Name: {item.platformName}
           </h2>
@@ -86,8 +87,8 @@ const List = () => {
           <p className="text-gray-600 mb-2">
             Inventory Date: {item.inventoryDate}
           </p>
-          <div className="mb-4 relative">
-            <label className="text-gray-600">Platform Type:</label>
+          <div className="mb-4 flex items-center">
+            <label className="text-gray-600 mr-2">Platform Type:</label>
             <div className="custom-dropdown">
               <span
                 onClick={toggleDropdown}
@@ -106,12 +107,15 @@ const List = () => {
               )}
             </div>
           </div>
+
           <Link
             to={`/item/${item.id}`}
+            state={{ from: location }} // Set the state.from to the current location
             className="text-blue-500 hover:underline"
           >
             View Details
           </Link>
+
         </div>
       ))}
       <Pagination

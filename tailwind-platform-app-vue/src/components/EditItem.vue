@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-white shadow-md p-4 rounded-lg w-96 mx-auto" v-if="item">
+    <div class="bg-gray-200 shadow-md p-4 rounded-lg w-96 mx-auto" v-if="item">
       <h2 className="text-2xl font-semibold mb-4">Edit Platform</h2>
       <form @submit.prevent="saveChanges" class="space-y-4">
         <div class="mb-4">

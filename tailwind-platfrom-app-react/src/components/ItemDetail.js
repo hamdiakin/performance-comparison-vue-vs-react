@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
@@ -8,6 +8,8 @@ const ItemDetail = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const location = useLocation();
+  const from = location.state ? location.state.from : "/"; // Default to root if state is undefined
 
   const fetchItemData = async () => {
     try {
@@ -37,7 +39,7 @@ const ItemDetail = () => {
   const handleDelete = async () => {
     try {
       await Axios.delete(`http://localhost:3004/platforms/${id}`);
-      navigate("/");
+      navigate(from); // Navigate back to the previous page
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -46,9 +48,8 @@ const ItemDetail = () => {
   if (isLoading) {
     return <div className="text-center text-gray-600">Loading...</div>;
   }
-
   return (
-    <div className="bg-white shadow-md p-4 rounded-lg w-96 mx-auto">
+    <div className="bg-gray-200 shadow-md p-4 rounded-lg w-96 mx-auto items-center justify-center">
       <h2 className="text-2xl font-semibold mb-4">
         Platform Name: {item[0].platformName}
       </h2>
@@ -61,8 +62,8 @@ const ItemDetail = () => {
       <p className="text-gray-600">Min Speed: {item[0].minSpeed}</p>
 
       <div className="mt-6 flex justify-between">
-        <Link to="/" className="text-blue-500 hover:underline">
-          Back to List
+        <Link to={from} className="text-blue-500 hover:underline">
+          Back
         </Link>
         <div>
           <button

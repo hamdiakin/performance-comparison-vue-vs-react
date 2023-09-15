@@ -54,7 +54,7 @@ const ItemDetail = () => {
     <Show when={item().length >  0} fallback={<p>Loading...</p>}>
   
 
-      <div class="bg-white shadow-md p-4">
+      <div class="bg-white shadow-md p-4 rounded-lg w-96 mx-auto">
           <h2 class="text-xl font-semibold">Platform Name: {item()[0].platformName}</h2>
           <p class="text-gray-600">Platform ID: {item()[0].id}</p>
           <p class="text-gray-600">Inventory Date: {item()[0].inventoryDate}</p>

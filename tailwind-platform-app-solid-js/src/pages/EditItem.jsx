@@ -21,9 +21,16 @@ const EditItem = () => {
     platformType: [{}]
     // Add more form fields for other attributes here
   });
-  const [isNameValid, setIsNameValid] = createSignal(true);
-  const [isColorValid, setIsColorValid] = createSignal(true);
+  const [isPlatformNameValid, setIsPlatformNameValid] = createSignal(true);
+  const [isInventoryDateValid, setIsInventoryDateValid] = createSignal(true);
   const [isLengthValid, setIsLengthValid] = createSignal(true);
+  const [isWidthValid, setIsWidthValid] = createSignal(true);
+  const [isHeightValid, setIsHeightValid] = createSignal(true);
+  const [isMaxSpeedValid, setIsMaxSpeedValid] = createSignal(true);
+  const [isMinSpeedValid, setIsMinSpeedValid] = createSignal(true);
+  const [isPlatformTypeValid, setIsPlatformTypeValid] = createSignal(true);
+
+
   const navigate = useNavigate()
 
 
@@ -63,22 +70,22 @@ const EditItem = () => {
     const { name, value } = e.target;
 
     console.log(name)
-    if(name === "name"){
+    if(name === "platformName"){
       console.log(value.length)
       if(value.length < 10){
-        setIsNameValid(false);
+        setIsPlatformNameValid(false);
       }
       else{
-        setIsNameValid(true);
+        setIsPlatformNameValid(true);
       }
     }
-    else if (name === "color"){
+    else if (name === "inventoryDate"){
       console.log(value.length)
       if(value.length < 10){
-        setIsColorValid(false);
+        setIsInventoryDateValid(false);
       }
       else{
-        setIsColorValid(true);
+        setIsInventoryDateValid(true);
       }
     }
     else if (name === "length"){
@@ -90,7 +97,52 @@ const EditItem = () => {
         setIsLengthValid(true);
       }
     }
-    if(isNameValid() && isColorValid() && isLengthValid())
+    else if (name === "width"){
+      
+      if(isNaN(value)){
+        setIsWidthValid(false);
+      }
+      else{
+        setIsWidthValid(true);
+      }
+    }
+    else if (name === "height"){
+      
+      if(isNaN(value)){
+        setIsHeightValid(false);
+      }
+      else{
+        setIsHeightValid(true);
+      }
+    }
+    else if (name === "maxSpeed"){
+      
+      if(isNaN(value)){
+        setIsMaxSpeedValid(false);
+      }
+      else{
+        setIsMaxSpeedValid(true);
+      }
+    }
+    else if (name === "minSpeed"){
+      
+      if(isNaN(value)){
+        setIsMinSpeedValid(false);
+      }
+      else{
+        setIsMinSpeedValid(true);
+      }
+    }
+    else if (name === "platformType"){
+      
+      if(isNaN(value)){
+        setIsPlatformTypeValid(false);
+      }
+      else{
+        setIsPlatformTypeValid(true);
+      }
+    }
+    if(isPlatformNameValid() && isInventoryDateValid() && isLengthValid() && isWidthValid() && isHeightValid() && isMaxSpeedValid() && isMinSpeedValid() && isPlatformTypeValid())
     {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -98,7 +150,7 @@ const EditItem = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(isNameValid() && isColorValid() && isLengthValid())
+    if(isPlatformNameValid() && isInventoryDateValid() && isLengthValid() && isWidthValid() && isHeightValid() && isMaxSpeedValid() && isMinSpeedValid() && isPlatformTypeValid())
     {
       try {
         // Send an API request to update the item
@@ -121,7 +173,7 @@ const EditItem = () => {
   });
 
   return (
-    <div class="bg-white shadow-md p-4">
+    <div class="bg-white shadow-md p-4 rounded-lg w-96 mx-auto">
       <h2 class="text-xl font-semibold">Edit Item</h2>
       <form onSubmit={handleSubmit} use:formSubmit={fn}>
         <div class="mb-4">
@@ -137,7 +189,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isNameValid() && <div style="color: red;">Platform Name must be at least 10 characters long</div>}
+          {!isPlatformNameValid() && <div style="color: red;">Platform Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="inventoryDate">
@@ -152,7 +204,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isInventoryDateValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="length">
@@ -167,7 +219,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isLengthValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="width">
@@ -182,7 +234,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isWidthValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="height">
@@ -196,7 +248,7 @@ const EditItem = () => {
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
-          {!isColorValid() && <div style="color: red;">Color must be at least 10 characters long</div>}
+          {!isHeightValid() && <div style="color: red;">Color must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="maxSpeed">
@@ -210,7 +262,7 @@ const EditItem = () => {
             onInput={handleInputChange}
             class="w-full p-2 border rounded"
           />
-          {!isLengthValid() && <div style="color: red;">Length must be a number</div>}
+          {!isMaxSpeedValid() && <div style="color: red;">Length must be a number</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="minSpeed">
@@ -225,7 +277,7 @@ const EditItem = () => {
             class="w-full p-2 border rounded"
             required=""
           />
-          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isMinSpeedValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-bold mb-2" for="platformType">
@@ -244,7 +296,7 @@ const EditItem = () => {
             <option value="Platform B">Platform B</option>
             {/* Add more options as needed */}
           </select>
-          {!isNameValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
+          {!isPlatformTypeValid() && <div style="color: red;">Name must be at least 10 characters long</div>}
         </div>
         {/* Add more form fields for other attributes here */}
         <div class="mt-4">
